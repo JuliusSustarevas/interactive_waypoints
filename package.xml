@@ -6,7 +6,7 @@
   </description>
   <maintainer email="julius.sustarevas.16@ucl.ac.uk">Julius Sustarevas</maintainer>
   <author email="julius.sustarevas.16@ucl.ac.uk">Julius Sustarevas</author>
-  <license>BSD</license>
+  <license>MIT</license>
   <url type="website"></url>
   <url type="repository"></url>
 
@@ -14,12 +14,12 @@
   <build_depend>actionlib</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>move_base_msgs</build_depend>
-  <build_depend>rospy</build_depend>  
+  <build_depend>rospy</build_depend>
   <build_depend>std_msgs</build_depend>
   <run_depend>actionlib</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>move_base_msgs</run_depend>
-  <run_depend>rospy</run_depend>  
+  <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>python-easygui</run_depend>
 
