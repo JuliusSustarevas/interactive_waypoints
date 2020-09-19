@@ -4,7 +4,7 @@ arrow_scale:
 control_scale:
   dict: { data: 0.35 }
   type: std_msgs/Float32
-default_mesh:
+flag_mesh:
   dict: { data: "package://interactive_waypoints/res/generic_flag.stl" }
   type: std_msgs/String
 marker_color:
