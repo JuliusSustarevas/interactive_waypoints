@@ -2,9 +2,11 @@
 
 This repo is inspired by http://wiki.ros.org/follow_waypoints and extends the functionality further. It allows to graphically control the list of waypoints, add/remove/change_id.. It also allows **Saving to file** and **sending to move_base** from a simple drop down menu.
 
-<figure class="video_container">
+<!-- <figure class="video_container">
 <iframe src="https://www.youtube.com/embed/TEhuI_YelVc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</figure>
+</figure> -->
+
+[![Check a short demo here](https://img.youtube.com/vi/TEhuI_YelVc/0.jpg)](https://www.youtube.com/embed/TEhuI_YelVc)
 
 ## Description:
 
