@@ -5,7 +5,8 @@
     <param name="connect_movebase" value="true"/>
     <param name="enable_saving" value="true"/>
     <param name="waypoint_server_name" value="waypoint_srv"/>
-    <rosparam command="load" ns="waypoint_params" file="$(find interactive_waypoints)/res/waypoint_params.yaml"/>
+    <!-- Can load params here too -->
+    <!-- <rosparam command="load" ns="waypoint_params" file="$(find interactive_waypoints)/res/waypoint_params.yaml"/> -->
   </node>
 
 </launch>

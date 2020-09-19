@@ -2,14 +2,15 @@
 import os
 from copy import deepcopy
 import rospy
-
+import rospkg
 import waypoint_list
 from visualization_msgs.msg import InteractiveMarker, InteractiveMarkerControl, Marker
 from geometry_msgs.msg import PoseWithCovarianceStamped,  PoseStamped, Quaternion
 from ros_msgdict import msgdict
 
-# Load params
-params = msgdict.params2msgdict("~waypoint_params")
+# default params
+params = msgdict.yaml2msgdict(rospkg.RosPack().get_path(
+    "interactive_waypoints")+"/res/waypoint_params.yaml")
 
 
 def normalizeQuaternion(quaternion_msg):

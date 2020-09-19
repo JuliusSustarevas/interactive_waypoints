@@ -2,7 +2,6 @@
 import rospy
 from waypoint_list import *
 
-
 rospy.init_node("interactive_waypoints")
 pose_topic = rospy.get_param(
     "~add_waypoint_topic", "/initialpose")
