@@ -8,5 +8,6 @@
     <!-- Can load params here too -->
     <!-- <rosparam command="load" ns="waypoint_params" file="$(find interactive_waypoints)/res/waypoint_params.yaml"/> -->
   </node>
+  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find interactive_waypoints)/res/rviz.rviz"/>
 
 </launch>
