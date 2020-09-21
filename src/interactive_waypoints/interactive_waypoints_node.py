@@ -5,7 +5,6 @@ from waypoint_list import *
 rospy.init_node("interactive_waypoints")
 pose_topic = rospy.get_param(
     "~add_waypoint_topic", "/initialpose")
-srv_name = rospy.get_param("~waypoint_server_name", "waypoint_srv")
 add_movebase_action = rospy.get_param(
     "~movebase_action", True)
 add_saveload = rospy.get_param(

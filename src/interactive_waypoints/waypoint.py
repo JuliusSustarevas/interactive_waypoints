@@ -92,7 +92,6 @@ class WaypointMarker(InteractiveMarker, object):
 
 
 class Waypoint(object):
-    message_type = "geometry_msgs/PoseStamped"
 
     def __init__(self, pose=None):
         """[Waypoint is a basic 'location' + 'interactive marker' implementaiton. It supports highlighting, displaying text etc. Any Waypoint should be sufficiently initialised by simply pose and pointer to server]

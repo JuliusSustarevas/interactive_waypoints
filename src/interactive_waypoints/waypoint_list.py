@@ -37,7 +37,7 @@ class WaypointMenuHandler(MenuHandler, object):
 
 class WaypointList(object):
 
-    def __init__(self, srv_name):
+    def __init__(self):
         """[Basic waypoint list. This means a list + server to hold the markers in. Maintains waypoint text as list index
         Note that this class is intended to mirror the internal state of the waypoint server. i.e. if waypoint is in this list, its on the server, if its removed from here, its removed from server.
         Note that this is Waypoint Class Agnostic]
@@ -48,7 +48,8 @@ class WaypointList(object):
         """
         # Create server
         self._server = InteractiveWaypointServer(
-            srv_name)
+            rospy.get_param("~waypoint_server_name", "waypoint_srv"))
+
         self._wp_list = []
 
     def get_list(self):
@@ -145,17 +146,48 @@ class WaypointList(object):
         for ii in range(self.len()):
             self._wp_list[ii].set_text(str(ii+1))
 
+        def save_to_msg(self):
+        """[Convert waypoint into a restorable ROS message. This is done for file saving convenience.]
+        Returns:
+            [PoseStamped]: [ros message such that output of this function given to from_msg() would recreate the waypoint]
+        """
+        pose_array = PoseArray()
+        if self.len() == 0:
+            return pose_array
+
+        for wp in self.get_list():
+            msg = wp.save_to_msg()
+            pose_array.header.frame_id = msg.header.frame_id
+            pose_array.poses.append(msg.pose)
+
+        return pose_array
+
+    def load_from_msg(self, msg):
+        """[Load from PoseArray]
+
+        Args:
+            msg ([type]): [description]
+        """
+        self.clear()
+        frame_id = msg.header.frame_id
+        wp_pose = PoseStamped()
+        wp_pose.header.frame_id = frame_id
+        for pose in msg.poses:
+            wp = Waypoint()
+            wp_pose.pose = pose
+            wp.load_from_msg(deepcopy(wp_pose))
+            self.append(wp)
+
 
 class InteractiveWaypointList(WaypointList):
-    message_type = "geometry_msgs/PoseArray"
 
-    def __init__(self, srv_name):
+    def __init__(self):
         """[ Interactive Waypoint list: Extends WaypointList; is a list of interactive markers/poses/data  represented by an instance of Waypoint; implements right click drop down menu for actions; tracks waypoints in order; Implements attaching menu actions to be performed on a waypoint or on a list]
 
         Args:
             srv_name ([Str]): [Interactive Marker server name]
         """
-        WaypointList.__init__(self, srv_name)
+        WaypointList.__init__(self)
         self._menu_handler = WaypointMenuHandler()
         # Menu items:
         self._menu_handler.insert(
@@ -234,34 +266,20 @@ class InteractiveWaypointList(WaypointList):
         self._updateMenu()
         return wp
 
-    def save_to_msg(self):
-        """[Convert waypoint into a restorable ROS message. This is done for file saving convenience.]
-        Returns:
-            [PoseStamped]: [ros message such that output of this function given to from_msg() would recreate the waypoint]
-        """
-        pose_array = PoseArray()
-        if self.len() == 0:
-            return pose_array
+    def saveToPath(self, fullfilename):
+        if not fullfilename:
+            rospy.logerr("Cannot save, no Filename given")
+            return
+        rospy.loginfo(fullfilename)
+        rospy.loginfo("Saving waypoitns to: "+fullfilename)
+        # Clear local params
+        msg = self.save_to_msg(self)
+        msgdict.msgdict2yaml(msg, fullfilename)
 
-        for wp in self.get_list():
-            msg = wp.save_to_msg()
-            pose_array.header.frame_id = msg.header.frame_id
-            pose_array.poses.append(msg.pose)
-
-        return pose_array
-
-    def load_from_msg(self, msg):
-        """[Load from PoseArray]
-
-        Args:
-            msg ([type]): [description]
-        """
-        self.clear()
-        frame_id = msg.header.frame_id
-        wp_pose = PoseStamped()
-        wp_pose.header.frame_id = frame_id
-        for pose in msg.poses:
-            wp = Waypoint()
-            wp_pose.pose = pose
-            wp.load_from_msg(deepcopy(wp_pose))
-            self.append(wp)
+    def loadFromPath(self, fullfilename):
+        if not fullfilename:
+            rospy.logerr("Cannot Load, no Filename given")
+            return
+        rospy.loginfo("Loading waypoitns from: "+fullfilename)
+        msg = msgdict.yaml2msgdict(fullfilename)
+        self.load_from_msg(msg)

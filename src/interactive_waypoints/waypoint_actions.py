@@ -14,6 +14,7 @@ from geometry_msgs.msg import PoseWithCovarianceStamped, PoseArray, PoseStamped
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from geometry_msgs.msg import PoseWithCovarianceStamped, PoseArray
 from std_msgs.msg import Empty
+from ros_msgdict import msgdict
 
 
 def on_own_thread(func):
@@ -128,28 +129,7 @@ class WaypointSaveLoadAction(object):
             waypoint_list ([WaypointList]): [Instance of WaypointList]
             waypoint_name ([str]): [unused]
         """
-        fullfilename = self.get_filesave_path()
-        if not fullfilename:
-            rospy.logerr("Cannot save, no Filename given")
-            return
-        rospy.loginfo("Saving waypoitns to: "+fullfilename)
-        # Clear local params
-        try:
-            rospy.delete_param('waypoint_list')
-        except KeyError:
-            # non_existant param error can be ignored
-            pass
-        if os.path.isfile(fullfilename):
-            # Remove previous file of this name, since param dump wont do it by itself
-            os.remove(fullfilename)
-
-        msg = waypoint_list.save_to_msg()
-        rosparam.set_param_raw(
-            "waypoint_list", message_converter.convert_ros_message_to_dictionary(msg))
-        try:
-            rosparam.dump_params(fullfilename, "waypoint_list")
-        except:
-            rospy.logwarn("Writing waypoint param to file failed")
+        waypoint_list.saveToPath(self.get_filesave_path())
 
     @on_own_thread
     def loadFromPath(self, waypoint_list, waypoint_name):
@@ -159,21 +139,7 @@ class WaypointSaveLoadAction(object):
             waypoint_list ([WaypointList]): [Instance of WaypointList]
             waypoint_name ([str]): [unused]
         """
-        fullfilename = self.get_fileopen_path()
-        if not fullfilename:
-            rospy.logerr("Cannot Load, no Filename given")
-            return
-        rospy.loginfo("Loading waypoints from: "+fullfilename)
-        # Clear local params
-        try:
-            rospy.delete_param('waypoint_list')
-        except KeyError:
-            pass
-        waypoint_list.clear()
-        param = rosparam.load_file(fullfilename)[0][0]
-        msg = message_converter.convert_dictionary_to_ros_message(
-            waypoint_list.message_type, param)
-        waypoint_list.load_from_msg(msg)
+        waypoint_list.saveToPath(self.get_fileopen_path())
 
     def is_connected(self):
         """[Returns connected status]
