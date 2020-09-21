@@ -192,10 +192,10 @@ class Waypoint(object):
         """[Set the pose associated with this waypoint and update the waypoint]
 
         Args:
-            pose ([Pose]): [pose associated with this waypoint]
-            above_map ([bool]): [if true, 0.1 is added to z so that the marker is above the map]
+            pose ([PoseStamped]): [pose associated with this waypoint]
         """
-        self._int_marker.pose = pose
+        self._int_marker.header.frame_id = pose.header.frame_id
+        self._int_marker.pose = pose.pose
         self._int_marker.pose.position.z = 0.1
         self._upload()
 
@@ -225,7 +225,5 @@ class Waypoint(object):
         else:
             rospy.logerr(
                 "Cannot create Waypoint from {}".format(msg.__class__))
-
-        self._int_marker.header.frame_id = msg.header.frame_id
-        self.set_pose(pose)
+        self.set_pose(msg)
         self._upload()
