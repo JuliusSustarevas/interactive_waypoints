@@ -3,7 +3,6 @@ import rospy
 import rosparam
 import actionlib
 from copy import deepcopy
-from waypoint_actions import *
 from waypoint import Waypoint
 from interactive_markers.interactive_marker_server import InteractiveMarkerServer
 from interactive_markers.menu_handler import MenuHandler
@@ -12,6 +11,7 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from geometry_msgs.msg import PoseWithCovarianceStamped, PoseArray
 from std_msgs.msg import Empty
 from rospy_message_converter import message_converter
+from ros_msgdict import msgdict
 
 
 class Singleton(type):
@@ -108,7 +108,7 @@ class WaypointList(object):
             wp = self.get_wp(wp)
         self.pop(wp)  # pop without return
 
-    def clear(self):
+    def clearall(self):
         """[Remove all waypoints]
         """
         for _ in range(self.len()):
@@ -146,7 +146,7 @@ class WaypointList(object):
         for ii in range(self.len()):
             self._wp_list[ii].set_text(str(ii+1))
 
-        def save_to_msg(self):
+    def save_to_msg(self):
         """[Convert waypoint into a restorable ROS message. This is done for file saving convenience.]
         Returns:
             [PoseStamped]: [ros message such that output of this function given to from_msg() would recreate the waypoint]
@@ -168,7 +168,7 @@ class WaypointList(object):
         Args:
             msg ([type]): [description]
         """
-        self.clear()
+        self.clearall()
         frame_id = msg.header.frame_id
         wp_pose = PoseStamped()
         wp_pose.header.frame_id = frame_id
@@ -196,7 +196,7 @@ class InteractiveWaypointList(WaypointList):
         self._menu_handler.insert(
             "Delete", callback=lambda feedback: self.remove(feedback.marker_name))
         self._menu_handler.insert(
-            "Clear", callback=lambda feedback: self.clear())
+            "clearall", callback=lambda feedback: self.clearall())
         # action timers
         self.action_state_timers = []
 
@@ -272,7 +272,7 @@ class InteractiveWaypointList(WaypointList):
             return
         rospy.loginfo(fullfilename)
         rospy.loginfo("Saving waypoitns to: "+fullfilename)
-        # Clear local params
+        # clearall local params
         msg = self.save_to_msg(self)
         msgdict.msgdict2yaml(msg, fullfilename)
 
