@@ -177,11 +177,6 @@ class InteractiveWaypointList(WaypointList):
             check_cb (function): [Function taking no args, returns True or False if action is available or not]
         """
 
-        # def temp(_):
-        #     print(_)
-        # menu_item = self._menu_handler.insert(
-        #     menu_item_name, callback=lambda feedback: temp(exec_cb))
-
         menu_item = self._menu_handler.insert(
             menu_item_name, callback=lambda feedback: exec_cb(self, feedback.marker_name))
 
