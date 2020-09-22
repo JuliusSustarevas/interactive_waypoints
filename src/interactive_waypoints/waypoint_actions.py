@@ -53,13 +53,13 @@ def _movebase_command(func):
 
 class WaypointMoveBaseAction(object):
 
-    def __init__(self, move_base_nm="/move_base"):
+    def __init__(self, move_base_nm):
         self._mb_connected = False
         # Timer for monitoring conenction
-        self.mb_timer = rospy.Timer(rospy.Duration(
-            5), lambda event: self.ping_move_base)
         self._mb_client = actionlib.SimpleActionClient(
             move_base_nm, MoveBaseAction)
+        self.mb_timer = rospy.Timer(rospy.Duration(
+            5), lambda event: self.ping_move_base())
 
     def ping_move_base(self):
         if not self._mb_client.wait_for_server(timeout=rospy.Duration(3.0)):
