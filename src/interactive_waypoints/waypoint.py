@@ -173,9 +173,9 @@ class Waypoint(object):
             hglt ([Bool]): [if True, waypoint is highlighted]
         """
         if hglt:
-            self._int_marker.main_marker.color = params["marker_color_hl"]
+            self._int_marker.markers[0].color = params["marker_color_hl"]
         else:
-            self._int_marker.main_marker.color = params["marker_color"]
+            self._int_marker.markers[0].color = params["marker_color"]
         self._upload()
 
     def set_text(self, txt):
@@ -187,14 +187,14 @@ class Waypoint(object):
         self._int_marker.text_marker.text = txt
         self._upload()
 
-    def set_pose(self, pose):
+    def set_pose(self, msg):
         """[Set the pose associated with this waypoint and update the waypoint]
 
         Args:
             pose ([PoseStamped]): [pose associated with this waypoint]
         """
-        self._int_marker.header.frame_id = pose.header.frame_id
-        self._int_marker.pose = pose.pose
+        self._int_marker.header.frame_id = msg.header.frame_id
+        self._int_marker.pose = msg.pose
         self._int_marker.pose.position.z = 0.1
         self._upload()
 

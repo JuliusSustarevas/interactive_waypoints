@@ -19,15 +19,16 @@ rospy.Subscriber(pose_topic, PoseWithCovarianceStamped,
 if add_movebase_action:
     mb_action = WaypointMoveBaseAction(
         rospy.get_param("~move_base_namespace", "/move_base"))
-    wl.attach_action("goto", mb_action.goto_action, mb_action.is_connected)
-    wl.attach_action("gotoall", mb_action.gotoall_action,
-                     mb_action.is_connected)
-    wl.attach_action("cancel goto", mb_action.cancel_goals_action,
-                     mb_action.is_connected)
+    wl.attach_menu_action("goto", mb_action.goto_action,
+                          mb_action.is_connected)
+    wl.attach_menu_action("gotoall", mb_action.gotoall_action,
+                          mb_action.is_connected)
+    wl.attach_menu_action("cancel goto", mb_action.cancel_goals_action,
+                          mb_action.is_connected)
 if add_saveload:
     sl_action = WaypointSaveLoadAction()
-    wl.attach_action("save", sl_action.saveToPath, sl_action.is_connected)
-    wl.attach_action("load", sl_action.loadFromPath,
-                     sl_action.is_connected)
+    wl.attach_menu_action("save", sl_action.saveToPath, sl_action.is_connected)
+    wl.attach_menu_action("load", sl_action.loadFromPath,
+                          sl_action.is_connected)
 
 rospy.spin()

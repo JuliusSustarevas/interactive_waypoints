@@ -200,7 +200,7 @@ class InteractiveWaypointList(WaypointList):
         # action timers
         self.action_state_timers = []
 
-    def attach_action(self, menu_item_name, exec_cb, check_cb):
+    def attach_menu_action(self, menu_item_name, exec_cb, check_cb):
         """[Attach a menu item and associated callback to be offered on right click menu]
 
         Args:
@@ -212,13 +212,13 @@ class InteractiveWaypointList(WaypointList):
         menu_item = self._menu_handler.insert(
             menu_item_name, callback=lambda feedback: exec_cb(self, feedback.marker_name))
 
-        def check_status(_):
+        def change_status(_):
             self._menu_handler.setVisible(menu_item, check_cb())
             self._menu_handler.reApply(self._server)
             self._server.applyChanges()
 
         self.action_state_timers.append(
-            rospy.Timer(rospy.Duration(1.0), check_status))
+            rospy.Timer(rospy.Duration(1.0), change_status))
 
     def _updateMenu(self):
         """[Deletes all change_id menu entries and updates with new ones. Text is taken straight from the waypoints]
@@ -266,20 +266,20 @@ class InteractiveWaypointList(WaypointList):
         self._updateMenu()
         return wp
 
-    def saveToPath(self, fullfilename):
+    def saveToPath(self, fullfilename, name):
         if not fullfilename:
             rospy.logerr("Cannot save, no Filename given")
             return
         rospy.loginfo(fullfilename)
         rospy.loginfo("Saving waypoitns to: "+fullfilename)
         # clearall local params
-        msg = self.save_to_msg(self)
-        msgdict.msgdict2yaml(msg, fullfilename)
+        msg = self.save_to_msg()
+        msgdict.msgdict2yaml({name: msg}, fullfilename)
 
     def loadFromPath(self, fullfilename):
         if not fullfilename:
             rospy.logerr("Cannot Load, no Filename given")
             return
         rospy.loginfo("Loading waypoitns from: "+fullfilename)
-        msg = msgdict.yaml2msgdict(fullfilename)
-        self.load_from_msg(msg)
+        msg_dict = msgdict.yaml2msgdict(fullfilename)
+        self.load_from_msg(msg_dict[msg_dict.keys()[0]])
