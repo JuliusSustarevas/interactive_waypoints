@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import rospy
 from waypoint_list import *
+from waypoint import Waypoint
+from waypoint_actions import *
+from geometry_msgs.msg import PoseStamped
 
 rospy.init_node("interactive_waypoints")
 pose_topic = rospy.get_param(
@@ -10,10 +13,18 @@ add_movebase_action = rospy.get_param(
 add_saveload = rospy.get_param(
     "~saveload_action", True)
 
+
+def pwcs2ps(pwcs_msg):
+    msg = PoseStamped()
+    msg.header = pwcs_msg.header
+    msg.pose = pwcs_msg.pose.pose
+    return msg
+
+
 # create and setup server
-wl = InteractiveWaypointList(srv_name)
+wl = InteractiveWaypointList()
 rospy.Subscriber(pose_topic, PoseWithCovarianceStamped,
-                 lambda msg: wl.append(Waypoint(msg)))
+                 lambda msg: wl.append(Waypoint(pwcs2ps(msg))))
 
 # Add actions
 if add_movebase_action:

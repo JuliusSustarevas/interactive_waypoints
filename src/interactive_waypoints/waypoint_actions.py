@@ -129,7 +129,8 @@ class WaypointSaveLoadAction(object):
             waypoint_list ([WaypointList]): [Instance of WaypointList]
             waypoint_name ([str]): [unused]
         """
-        waypoint_list.saveToPath(self.get_filesave_path())
+        waypoint_list.saveToPath(
+            self.get_filesave_path(), "Path"+str(rospy.Time.now()))
 
     @on_own_thread
     def loadFromPath(self, waypoint_list, waypoint_name):
@@ -139,7 +140,7 @@ class WaypointSaveLoadAction(object):
             waypoint_list ([WaypointList]): [Instance of WaypointList]
             waypoint_name ([str]): [unused]
         """
-        waypoint_list.saveToPath(self.get_fileopen_path())
+        waypoint_list.loadFromPath(self.get_fileopen_path())
 
     def is_connected(self):
         """[Returns connected status]
