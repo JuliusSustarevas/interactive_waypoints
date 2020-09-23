@@ -43,7 +43,7 @@ def _movebase_command(func):
     @functools.wraps(func)
     def exec_command(self, *args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            return func(self, *args, **kwargs)
         except Exception as e:
             rospy.logerr(
                 "Calling Movebase failed, maybe movebase is down?: {}".format(e))
@@ -91,9 +91,12 @@ class WaypointMoveBaseAction(object):
 
     @on_own_thread
     def goto_action(self, waypoint_list, waypoint_name):
+        if not waypoint_name:
+            rospy.logerr("No wp selected")
+            return
         wp = waypoint_list.get_wp(waypoint_name)
         if self._mb_connected:
-            self._send_goal_pose(wp.get_pose().pose)
+            self._send_goal_pose(wp.get_pose())
         else:
             rospy.logerr(
                 "Attempting to invoke move_base, but client is not connected")
@@ -101,9 +104,9 @@ class WaypointMoveBaseAction(object):
     @on_own_thread
     def gotoall_action(self, waypoint_list, waypoint_name):
         if self._mb_connected:
-            waypoints = deepcopy(waypoint_list.get_list())
+            waypoints = waypoint_list.get_list()
             for wp in waypoints:
-                self._send_goal_pose(wp.get_pose().pose)
+                self._send_goal_pose(wp.get_pose())
         else:
             rospy.logerr(
                 "Attempting to invoke move_base, but client is not connected")
