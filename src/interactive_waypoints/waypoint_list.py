@@ -232,7 +232,7 @@ class InteractiveWaypointList(WaypointList):
         for wp in self._wp_list:
             self._menu_handler.apply(self._server, wp.get_name())
             self._menu_handler.reApply(self._server)
-            self._server.applyChanges()
+        self._server.applyChanges()
 
     def changeID(self, wp_old, new_id):
         """[Change the ID of a waypoint. Means to pop and then insert back in a different place]

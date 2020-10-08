@@ -126,7 +126,7 @@ class Waypoint(object):
         """
         self._iw_srv.insert(self._int_marker, self._processFeedback)
         rospy.logdebug("Uploading: {}".format(self.get_name()))
-        self._iw_srv.applyChanges()
+        # self._iw_srv.applyChanges()
 
     def _processFeedback(self, feedback):
         """[Gets executed anytime marker is interacted with on rviz]
@@ -135,7 +135,7 @@ class Waypoint(object):
             feedback ([InteractiveMarkerFeedback]): [feedback msg from rviz]
         """
         self._update()
-        self._iw_srv.applyChanges()
+        # self._iw_srv.applyChanges()
 
     # Getters
     def get_name(self):
