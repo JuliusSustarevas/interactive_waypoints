@@ -3,7 +3,7 @@ import os
 from copy import deepcopy
 import rospy
 import rospkg
-import waypoint_list
+# import waypoint_list
 from visualization_msgs.msg import InteractiveMarker, InteractiveMarkerControl, Marker
 from geometry_msgs.msg import PoseWithCovarianceStamped,  PoseStamped, Quaternion
 from ros_msgdict import msgdict
@@ -99,6 +99,7 @@ class Waypoint(object):
         Args:
             pose ([PoseWithCovarianceStamped, PoseStamped]) (optional): [Pose associated with the waypoint, if none is specified, waypoint is not uploaded to server]
         """
+        import waypoint_list
         self._iw_srv = waypoint_list.InteractiveWaypointServer()
         self._name = "Waypoint_" + \
             str(rospy.Time.now())  # Makes every wp unique
